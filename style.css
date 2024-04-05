@@ -1,0 +1,102 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Patrick Hand', cursive;
+    background-color: black;
+}
+
+.main-game {
+    width: 1200px;
+    height: 700px;
+    margin: 20px 160px;
+    background-color: white;
+}
+
+#game-header {
+    width: auto;
+    height: 100px;
+}
+.header-component{
+    margin: auto;
+    display: flex;
+}
+.game-body {
+    display: flex;
+}
+
+.game-play {
+    display: flex;
+    margin: 40px;
+    width: 1000px;
+    height: 500px;
+    background-color: yellow;
+}
+.home {
+    margin: auto;
+    font-size: 30px;
+    color: green;
+}
+.level{
+    margin: auto;
+    padding: 28px 35px;
+    font-size: 30px;
+    color: green;
+}
+.timer {
+    width: 600px;
+    height: 25px;
+    margin: auto;
+    background-color: green;
+}
+.score{
+    margin: auto;
+    font-size: 30px;
+    color: green;
+}
+.game-option {
+    width: 100px;
+    height: auto;
+    margin-top: 40px;
+}
+.play-again{
+    margin: auto;
+    padding-bottom: 50px;
+    padding-left: 30px;
+    font-size: 30px;
+    color: green;
+}
+.swap {
+    margin: auto;
+    padding-bottom: 50px;
+    padding-left: 30px;
+    font-size: 30px;
+    color: green;
+}
+.pause {
+    padding-bottom: 50px;
+    padding-left: 30px;
+    margin: auto;
+    font-size: 30px;
+    color: green;
+}
+/*table {*/
+/*    border-collapse: collapse;*/
+
+/*}*/
+/*td {*/
+/*    border: 1px solid black;*/
+/*    padding: 9px;*/
+
+/*}*/
+
+table {
+
+    border-collapse: collapse;
+}
+
+table td {
+    border: 1px solid yellow;
+    padding: 9px;
+}
+
+
