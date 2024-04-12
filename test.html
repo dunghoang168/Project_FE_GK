@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matrix Display</title>
-
+    <script src="https://kit.fontawesome.com/e7498fd49d.js" crossorigin="anonymous"></script>
     <style>
         #gameFrame {
             width: 600px;
@@ -12,22 +12,52 @@
             background-color: #9ad59f;
             border-radius: 8px;
             margin: 0 auto;
+
             position: relative;
             align-items: center;
             justify-content: center;
         }
 
         .cell {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             position: absolute;
             cursor: pointer;
             border: 1px solid black;
         }
+
+        .container {
+            width: 800px;
+            height: 700px;
+            border: 1px solid #ccc;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #shuffleButton {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-<div id="gameFrame"></div>
+<div class="container">
+    <button id="shuffleButton">shuffle</button>
+    <div id="gameFrame"></div>
+</div>
 <script src="test.js"></script>
 <script src="jquery-3.6.4.min.js"></script>
 </body>

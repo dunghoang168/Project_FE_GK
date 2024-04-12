@@ -1,7 +1,9 @@
-let cellWidth = 50;
-let cellHeight = 50;
-let gameWidth = 8;
-let gameHeight = 8;
+let cellWidth = 60;
+let cellHeight = 60;
+let gameWidth = 10;
+let gameHeight = 10;
+let shuffleIndex
+let value
 let totalCells = gameHeight * gameWidth;
 var DONE = false
 const cell_images = [
@@ -69,15 +71,17 @@ const cell_images = [
 ];
 
 let cellsLength
-var cells = []
+var cells = [];
 
 let gameFrame = document.getElementById("gameFrame");
 
+//let shuffle = document.getElementById("shuffleButton")
+
 function getRandomImages() {
     let cellImages = [];
-    // lấy tổng ô chia số cặp (8 -2 = 6) (6*6/2=18)
+    // lấy tổng ô chia số cặp (10 -2 = 8) (8*8/2=32)
 
-    for (let i = 0; i < 18 ; i++) {
+    for (let i = 0; i < ((gameWidth - 2)*(gameHeight-2)/2) ; i++) {
         let randomIndex = Math.floor(Math.random() * cell_images.length);
         let randomImage = cell_images[randomIndex];
         // thêm 1 cặp
@@ -85,7 +89,6 @@ function getRandomImages() {
         cellImages.push(randomImage);
     }
     cellsLength = cellImages.length
-    console.log(cellImages.length)
     return cellImages;
 }
 
@@ -111,7 +114,7 @@ const init = () => {
     let k = 0
     for (let i = 1; i < gameWidth - 1; i++) {
         for (let j = 1; j < gameHeight - 1; j++) {
-            let value = cellImages[k]
+             value = cellImages[k]
             cells[i][j] = value
             k = k + 1
         }
@@ -123,19 +126,19 @@ const init = () => {
     }
 }
 
-
 //generate cells by div element to game frame
 const draw = (x, y, value) => {
     let cell = document.createElement("div");
     cell.className = "cell cell_" + x + "-" + y;
     cell.style.backgroundImage = `url(${value})`;
     if (value === 0) {
-        cell.style.backgroundColor = "#faebd700"
+        // cell.style.backgroundColor = "#faebd700"
+        cell.style.backgroundColor = "red"
         cell.style.border = "none"
+
     }
     cell.style.left = `${y * cellWidth}px`;
     cell.style.top = `${x * cellHeight}px`;
-    // hàm xử lí khi click chuột
     cell.addEventListener("click", (e) => {
         mouseClicked(x, y, e)
     });
@@ -187,6 +190,8 @@ function mouseClicked(x, y, e) {
                 } else {
                     div1.style.opacity = "1"
                     div2.style.opacity = "1"
+
+                    //selector
                     cell1 = null
                     cell2 = null
 
@@ -195,6 +200,7 @@ function mouseClicked(x, y, e) {
         }
     }
 }
+
 let count = 0;
 const pathWay = (cell1, cell2) => {
     let stack = []
@@ -227,7 +233,6 @@ const pathWay = (cell1, cell2) => {
             }
         }
     }
-    // updateShuffle()
 }
 var finishPath = false
 const logPath = (v) => {
@@ -255,171 +260,102 @@ const logPath = (v) => {
     let pathWay = new Map()
     if (path.length <= 2 && !finishPath) {
         pathWay.set(0, path)
-        //drawPathWay(pathWay, path)
-
         removeCells()
+
     } else {
         let count = 0
-        pathWay.set(count, [ path[0]])
+        pathWay.set(count, [path[0]])
         pathWay.set(count, [...pathWay.get(count), path[1]])
         for (let i = 2; i < path.length; i++) {
             if (path[i][0] !== path[i - 2][0] && path[i][1] !== path[i - 2][1]) {
                 count++
-                if(pathWay.get(count) !== undefined){
+                if (pathWay.get(count) !== undefined) {
                     pathWay.set(count, [...pathWay.get(count), path[i]])
-                }else{
+                } else {
                     pathWay.set(count, [path[i]])
                 }
-            }else{
-                if(pathWay.get(count) !== undefined){
+            } else {
+                if (pathWay.get(count) !== undefined) {
                     pathWay.set(count, [...pathWay.get(count), path[i]])
-                }else{
+                } else {
                     pathWay.set(count, [path[i]])
                 }
             }
         }
-        //  console.log("pathWay: ", pathWay)
-        // console.log("count:", count)
         if (count <= 2 && !finishPath) {
-           // drawPathWay(pathWay, path, cell2)
             removeCells()
         }
     }
 }
 
-// const drawPathWay = (path, arrr, cell2) => {
-//     finishPath = true
-//     let frame = document.querySelector("#gameFrame")
-//
-//     for(let i = 0 ; i < path.size ; i++){
-//         let arrayPath1 = path.get(i)
-//         if(arrayPath1[0][1] === arrayPath1[arrayPath1.length - 1][1] && arrayPath1.length !== 1){
-//             console.log(arrayPath1);
-//             if(i > 0 ){
-//                 arrayPath1 = [path.get(i - 1)[path.get(i - 1).length - 1], ...arrayPath1]
-//             }
-//             let left = Number(document.querySelector(`.cell_${arrayPath1[0][0]}-${arrayPath1[0][1]}`).style.left.split("px")[0])
-//             let start = Number(document.querySelector(`.cell_${arrayPath1[0][0]}-${arrayPath1[0][1]}`).style.top.split("px")[0])
-//             let end = Number(document.querySelector(`.cell_${arrayPath1[arrayPath1.length - 1][0]}-${arrayPath1[arrayPath1.length - 1][1]}`).style.top.split("px")[0])
-//             // console.log(start, end , left);
-//             if(start > end){
-//                 let s = start
-//                 start = end
-//                 end = s
-//             }
-//             let line = $('<div>').addClass('line')
-//             line.css({
-//                 "width": "3px",
-//                 "position": "absolute",
-//                 "top" :  start + 25 + "px",
-//                 "left" :  left + 25 + "px" ,
-//                 "height" :  end - start + "px",
-//                 "background" : "red"
-//             })
-//             $(frame).append(line)
-//         }else{
-//             console.log(path.get(i));
-//             if(i > 0 ){
-//                 arrayPath1 = [path.get(i - 1)[path.get(i - 1).length - 1], ...arrayPath1]
-//             }
-//             let top = Number(document.querySelector(`.cell_${arrayPath1[0][0]}-${arrayPath1[0][1]}`).style.top.split("px")[0])
-//             let start =Number( document.querySelector(`.cell_${arrayPath1[0][0]}-${arrayPath1[0][1]}`).style.left.split("px")[0])
-//             let end = Number(document.querySelector(`.cell_${arrayPath1[arrayPath1.length - 1][0]}-${arrayPath1[arrayPath1.length - 1][1]}`).style.left.split("px")[0])
-//             if(start > end){
-//                 let s = start
-//                 start = end
-//                 end = s
-//             }
-//             let line = $('<div>').addClass('line')
-//             line.css({
-//                 "position": "absolute",
-//                 "top" : Number(top) + 25 +  "px",
-//                 "left" : Number(start) + 25 + "px",
-//                 "right" :Number($(frame).width()) -  Number(end)  - 25 + "px",
-//                 "background" : "red",
-//                 "height" : "3px"
-//             })
-//             $(frame).append(line)
-//         }
-//         arrayPath1 = path.get(i)
-//         if(arrayPath1[0][1] === arrayPath1[arrayPath1.length - 1][1]){
-//             console.log(arrayPath1);
-//             if(i > 0 ){
-//                 arrayPath1 = [path.get(i - 1)[path.get(i - 1).length - 1], ...arrayPath1]
-//             }
-//             let left = Number(document.querySelector(`.cell_${arrayPath1[0][0]}-${arrayPath1[0][1]}`).style.left.split("px")[0])
-//             let start = Number(document.querySelector(`.cell_${arrayPath1[0][0]}-${arrayPath1[0][1]}`).style.top.split("px")[0])
-//             let end = Number(document.querySelector(`.cell_${arrayPath1[arrayPath1.length - 1][0]}-${arrayPath1[arrayPath1.length - 1][1]}`).style.top.split("px")[0])
-//             if(start > end){
-//                 let s = start
-//                 start = end
-//                 end = s
-//             }
-//             let line = $('<div>').addClass('line')
-//             line.css({
-//                 "width": "3px",
-//                 "position": "absolute",
-//                 "top" :  start + 25 + "px",
-//                 "left" :  left + 25 + "px" ,
-//                 "height" :  end - start + "px",
-//                 "background" : "red"
-//             })
-//             $(frame).append(line)
-//         }else{
-//             console.log(path.get(i));
-//             if(i > 0 ){
-//                 arrayPath1 = [path.get(i - 1)[path.get(i - 1).length - 1], ...arrayPath1]
-//             }
-//
-//             let top = Number(document.querySelector(`.cell_${arrayPath1[0][0]}-${arrayPath1[0][1]}`).style.top.split("px")[0])
-//             let start =Number( document.querySelector(`.cell_${arrayPath1[0][0]}-${arrayPath1[0][1]}`).style.left.split("px")[0])
-//             let end = Number(document.querySelector(`.cell_${arrayPath1[arrayPath1.length - 1][0]}-${arrayPath1[arrayPath1.length - 1][1]}`).style.left.split("px")[0])
-//             if(start > end){
-//                 let s = start
-//                 start = end
-//                 end = s
-//             }
-//             let line = $('<div>').addClass('line')
-//             line.css({
-//                 "position": "absolute",
-//                 "top" : Number(top) + 25 +  "px",
-//                 "left" : Number(start) + 25 + "px",
-//                 "right" :Number($(frame).width()) -  Number(end)  - 25 + "px",
-//                 "background" : "red",
-//                 "height" : "3px"
-//             })
-//             $(frame).append(line)
-//         }
-//
-//     }
-//     increaseScore()
-//     setTimeout(() => {
-//         arrr.map(j => {
-//             cells[j[0]][j[1]] = 0
-//         })
-//         scoreAudio.play()
-//         reRender()
-//         levelDirection()
-//         endGame()
-//     }, 400)
-// }
 function removeCells() {
-// Lấy DOM elements của hai ô
-    const div1 = document.querySelector(`.cell_${cell1[0]}-${cell1[1]}`);
-    const div2 = document.querySelector(`.cell_${cell2[0]}-${cell2[1]}`);
+    // Kiểm tra xem có đủ hai ô được chọn không
+    if (cell1 && cell2) {
+        // Lấy DOM elements của hai ô
+        const div1 = document.querySelector(`.cell_${cell1[0]}-${cell1[1]}`);
+        const div2 = document.querySelector(`.cell_${cell2[0]}-${cell2[1]}`);
 
-    // Xóa hai ô khỏi DOM
-    div1.parentNode.removeChild(div1);
-    div2.parentNode.removeChild(div2);
+        // Xóa các ô khỏi DOM
+        div1.parentNode.removeChild(div1);
+        div2.parentNode.removeChild(div2);
 
-    // Đặt giá trị tương ứng của hai ô trong ma trận thành 0
-    cells[cell1[0]][cell1[1]] = 0;
-    cells[cell2[0]][cell2[1]] = 0;
 
-    // Đặt lại các biến lưu trạng thái cho các ô được chọn
-    cell1 = null;
-    cell2 = null;
+        // Đặt giá trị của hai ô trong ma trận về 0
+        cells[cell1[0]][cell1[1]] = 0;
+        cells[cell2[0]][cell2[1]] = 0;
+
+        // Đặt lại các biến lưu trạng thái cho các ô được chọn
+        cell1 = null;
+        cell2 = null;
+
+        // Vẽ lại ma trận sau khi xóa
+        reRender();
+    }
 }
 
+//shuffle pokemon
+let shuffle_display
+const shuffleButton = () => {
+    if (shuffleIndex >= 0) {
+        for (let i = 1; i < cells.length - 1; i++) {
+            for (let j = 1; j < cells[i].length - 1; j++) {
+                if (cells[i][j] !== 0) {
+                    let c1 = cells[i][j]
+                    let i_r = Math.floor(Math.random() * (gameHeight - 2)) + 1
+                    let j_r = Math.floor(Math.random() * (gameHeight - 2)) + 1
+                    for (let k = 0; k < 10000; k++) {
+                        if (cells[i_r][j_r] === 0) {
+                            i_r = Math.floor(Math.random() * (gameHeight - 2)) + 1
+                            j_r = Math.floor(Math.random() * (gameHeight - 2)) + 1
+                        } else {
+                            break
+                        }
+                    }
+                    let value_c1 = cells[i][j]
+                    cells[i][j] = cells[i_r][j_r]
+                    cells[i_r][j_r] = value_c1
+                }
+            }
+        }
+        console.log("Num : " + cells )
+        shuffleIndex = shuffleIndex - 1
+        shuffle_display = shuffleIndex
+    }
+    reRender()
+}
 
+//update the game frame after changes
+const reRender = () => {
+    gameFrame.textContent = ""
+    for (let i = 0; i < gameWidth; i++) {
+        for (let j = 0; j < gameHeight; j++) {
+                draw(i, j, cells[i][j])
+        }
+    }
+}
+document.getElementById("shuffleButton").addEventListener("click", function () {
+    init()
+    shuffleButton()
+
+});
 init()
